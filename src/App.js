@@ -18,7 +18,8 @@ function App() {
       <br/>
       {notes.map(note => (
         <>
-          {note.map(line => (
+          <h4>{note.title}</h4>
+          {note.contents.map(line => (
             <>
               {line}
               <br/>
