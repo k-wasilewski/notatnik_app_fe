@@ -1,10 +1,14 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-import { getAllNotes } from './requests';
+import { getAllNotes } from './requests.ts';
 
-function App() {
+export interface Note {
+  title: string;
+  contents: string[];
+}
 
-  const [notes, setNotes] = useState([]);
+const App = () => {
+  const [notes, setNotes] = useState<Note[]>([]);
 
   useEffect(() => {
     getAllNotes()
