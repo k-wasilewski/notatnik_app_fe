@@ -20,18 +20,18 @@ const App = () => {
     <div className='text-wrapper'>
       <span className='text'>notes:</span>
       <br/>
-      {notes.map(note => (
-        <>
+      {notes.map((note, i) => (
+        <div key={`note-${i}`}>
           <h4>{note.title}</h4>
-          {note.contents.map(line => (
-            <>
+          {note.contents.map((line, j) => (
+            <div key={`note-${i}-line-${j}`}>
               {line}
               <br/>
-            </>
+            </div>
           ))}
           <br/>
           <br/>
-        </>
+        </div>
       ))}
     </div>
   );
