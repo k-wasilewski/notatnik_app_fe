@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { getAllNotes } from './requests.ts';
-
-export interface Note {
-  title: string;
-  contents: string[];
-}
+import Note, { NoteModel } from './Note.tsx';
 
 const App = () => {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<NoteModel[]>([]);
 
   useEffect(() => {
     getAllNotes()
@@ -18,21 +14,10 @@ const App = () => {
 
   return (
     <div className='text-wrapper'>
-      <span className='text'>notes:</span>
+      <span className='text'>Notatki:</span>
       <br/>
-      {notes.map((note, i) => (
-        <div key={`note-${i}`}>
-          <h4>{note.title}</h4>
-          {note.contents.map((line, j) => (
-            <div key={`note-${i}-line-${j}`}>
-              {line}
-              <br/>
-            </div>
-          ))}
-          <br/>
-          <br/>
-        </div>
-      ))}
+      {notes.map((note, i) => <Note note={note} idx={i} />)}
+      {/* todo: infinite scroll */}
     </div>
   );
 }
