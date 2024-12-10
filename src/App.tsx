@@ -7,9 +7,10 @@ const App = () => {
   const [notes, setNotes] = useState<NoteModel[]>([]);
 
   useEffect(() => {
-    getAllNotes()
-      .then(res => setNotes(res.data))
-      .catch(e => console.error(e));
+    getAllNotes().subscribe({
+      next: val => setNotes(val),
+      error: err => console.error(err),
+    });
   }, []);
 
   return (
