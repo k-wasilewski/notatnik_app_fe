@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { getAllNotes } from './requests.ts';
-import Note, { NoteModel } from './Note.tsx';
+import { NoteModel } from './Note.tsx';
 
 const App = () => {
   const [notes, setNotes] = useState<NoteModel[]>([]);
@@ -16,16 +16,20 @@ const App = () => {
 
   return (
     <div className='wrapper'>
-      <span className='notes-title'>Notatki:</span>
+      <img src={require('./favicon.png')} width='100px' alt='logo'/>
       <div className='notes-wrapper'>
         <div className='notes-list'>
           {notes.length && notes.map(note => (
-            <span className='note-title' onClick={() => setSelectedNote(note)}>{note.title}</span>
+            <span className='note-title-list' onClick={() => setSelectedNote(note)}>{note.title}</span>
           ))}
           {/* todo: infinite scroll */}
         </div>
         {selectedNote && (
-          <div className='note-wrapper'>{selectedNote.contents}</div>
+          <div className='note-wrapper'>
+            <span className='note-title-wrapper'>{selectedNote.title}</span>
+            <div className='break'/>
+            <div className='note-contents-wrapper'>{selectedNote.contents}</div>
+          </div>
         )}
       </div>
     </div>

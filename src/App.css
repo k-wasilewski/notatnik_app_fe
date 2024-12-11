@@ -2,11 +2,6 @@
   margin-left: 100px;
 }
 
-.notes-title {
-  display: block;
-  margin-bottom: 50px;
-}
-
 .notes-wrapper {
   display: flex;
 }
@@ -15,10 +10,10 @@
   overflow-y: scroll;
   scrollbar-width: thin;
   height: 90vh;
-  width: fit-content;
+  width: 200px;
 }
 
-.note-title {
+.note-title-list {
   display: block;
   font-weight: 600;
   margin-bottom: 5px;
@@ -29,10 +24,18 @@
   }
 }
 
+.break {
+  flex-basis: 100%;
+  height: 10px;
+}
+
 .note-wrapper {
+  margin-left: 50px;
+}
+
+.note-contents-wrapper {
   border: solid;
   height: fit-content;
   width: 1000px;
-  margin-left: 50px;
   padding: 10px;
 }
