@@ -1,4 +1,38 @@
-.text-wrapper {
-  overflow: hidden;
-  text-align: center;
+.wrapper {
+  margin-left: 100px;
+}
+
+.notes-title {
+  display: block;
+  margin-bottom: 50px;
+}
+
+.notes-wrapper {
+  display: flex;
+}
+
+.notes-list {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  height: 90vh;
+  width: fit-content;
+}
+
+.note-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  cursor: pointer;
+
+  &:hover {
+    color: grey;
+  }
+}
+
+.note-wrapper {
+  border: solid;
+  height: fit-content;
+  width: 1000px;
+  margin-left: 50px;
+  padding: 10px;
 }
