@@ -15,12 +15,18 @@ const App = () => {
   }, []);
 
   return (
-    <div className='wrapper'>
+    <>
       <img src={require('./favicon.png')} width='100px' alt='logo'/>
+      <div className='wrapper'>
       <div className='notes-wrapper'>
         <div className='notes-list'>
           {notes.length && notes.map(note => (
-            <span className='note-title-list' onClick={() => setSelectedNote(note)}>{note.title}</span>
+            <span 
+              className={`note-title-list ${note.title === selectedNote?.title && 'selected-note-title'}`} 
+              onClick={() => setSelectedNote(note)}
+            >
+              {note.title}
+            </span>
           ))}
           {/* todo: infinite scroll */}
         </div>
@@ -33,6 +39,7 @@ const App = () => {
         )}
       </div>
     </div>
+    </>
   );
 }
 
