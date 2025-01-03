@@ -46,15 +46,19 @@ const App = () => {
       <Logo />
         <div className='notes-wrapper'>
           <div className='notes-list' onScroll={onScroll}>
-            {notes.length && notes.map((note, i) => (
-              <span
-                key={`note-${i}`}
-                className={`note-title-list ${note.title === selectedNote?.title && 'selected-note-title'}`} 
-                onClick={() => setSelectedNote(note)}
-              >
-                {note.title}
-              </span>
-            ))}
+            {notes.length ? 
+              notes.map((note, i) => (
+                <span
+                  key={`note-${i}`}
+                  className={`note-title-list ${note.title === selectedNote?.title && 'selected-note-title'}`} 
+                  onClick={() => setSelectedNote(note)}
+                >
+                  {note.title}
+                </span>
+              ))
+              :
+              null
+            }
           </div>
           {selectedNote && (
             <div className='note-wrapper'>

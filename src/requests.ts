@@ -12,7 +12,6 @@ export const getAllNotes: () => Observable<NoteModel[]> = () => {
 }
 
 export const getPaginatedNotes: (start: number, end: number) => Observable<NoteModel[]> = (start, end) => {
-    console.log(start, end)
     return ajax.get(`http://localhost:8080/v1/paginated/notes?start=${start}&end=${end}`).pipe(
         map(res => res.response as NoteModel[]),
         catchError(error => {
