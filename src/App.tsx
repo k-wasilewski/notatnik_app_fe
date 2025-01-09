@@ -16,11 +16,11 @@ const App = () => {
     if (!_isMounted.current) {
       _isMounted.current = true;
       getPaginatedNotes(startIdx, PAGE_SIZE).subscribe({
-        next: val => {
+        next: (val) => {
           if (!val.length) return;
-          setNotes(prev => [...prev, ...val]);
+          setNotes((prev) => [...prev, ...val]);
         },
-        error: err => console.error(err),
+        error: (err) => console.error(err),
       });
     }
   }, [startIdx]);
@@ -30,45 +30,45 @@ const App = () => {
 
     if (target.scrollTop + target.offsetHeight === target.scrollHeight) {
       getPaginatedNotes(startIdx + PAGE_SIZE, PAGE_SIZE).subscribe({
-        next: val => {
+        next: (val) => {
           if (!val.length) return;
-          setNotes(prev => [...prev, ...val]);
-          setStartIdx(prev => prev + PAGE_SIZE);
+          setNotes((prev) => [...prev, ...val]);
+          setStartIdx((prev) => prev + PAGE_SIZE);
         },
-        error: err => console.error(err),
+        error: (err) => console.error(err),
       });
     }
-  }
+  };
 
   return (
     <>
-      <div className='wrapper'>
-      <Logo />
-        <div className='notes-wrapper'>
-          <div className='notes-list' onScroll={onScroll}>
-            {notes.length ? 
-              notes.map((note, i) => (
-                <span
-                  key={`note-${i}`}
-                  className={`note-title-list ${note.title === selectedNote?.title && 'selected-note-title'}`} 
-                  onClick={() => setSelectedNote(note)}
-                >
-                  {note.title}
-                </span>
-              ))
-              :
-              null
-            }
+      <div className="wrapper">
+        <Logo />
+        <div className="notes-wrapper">
+          <div className="notes-list" onScroll={onScroll}>
+            {notes.length
+              ? notes.map((note, i) => (
+                  <span
+                    key={`note-${i}`}
+                    className={`note-title-list ${
+                      note.title === selectedNote?.title && 'selected-note-title'
+                    }`}
+                    onClick={() => setSelectedNote(note)}
+                  >
+                    {note.title}
+                  </span>
+                ))
+              : null}
           </div>
           {selectedNote && (
-            <div className='note-wrapper'>
-              <span className='note-title-wrapper'>{selectedNote.title}</span>
-              <div className='break'/>
-              <div className='note-contents-wrapper'>
+            <div className="note-wrapper">
+              <span className="note-title-wrapper">{selectedNote.title}</span>
+              <div className="break" />
+              <div className="note-contents-wrapper">
                 {selectedNote.contents.map((line, i) => (
                   <span key={`line-${i}`}>
                     {line}
-                    <br/>
+                    <br />
                   </span>
                 ))}
               </div>
@@ -78,6 +78,6 @@ const App = () => {
       </div>
     </>
   );
-}
+};
 
 export default App;

@@ -18,7 +18,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --transformIgnorePatterns",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "eslintConfig": {
     "extends": [
@@ -48,6 +49,7 @@
     "@typescript-eslint/parser": "^5.0.0",
     "ajv": "^7.2.4",
     "eslint": "^8.1.0",
+    "prettier": "^3.4.2",
     "typescript": "^5.7.2"
   }
 }

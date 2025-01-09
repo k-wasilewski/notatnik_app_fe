@@ -9,9 +9,15 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 test('renders notes', async () => {
   mockedAxios.get.mockResolvedValue({
     data: [
-      { title: 'first', contents: ['one', 'two'] },
-      { title: 'second', contents: ['three', 'four'] },
-    ]
+      {
+        title: 'first',
+        contents: ['one', 'two'],
+      },
+      {
+        title: 'second',
+        contents: ['three', 'four'],
+      },
+    ],
   });
 
   render(<App />);
