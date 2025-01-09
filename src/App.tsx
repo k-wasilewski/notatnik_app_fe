@@ -27,7 +27,7 @@ const App = () => {
 
   const onScroll = (evt) => {
     const target = evt.target;
-
+console.log('scroll')
     if (target.scrollTop + target.offsetHeight === target.scrollHeight) {
       getPaginatedNotes(startIdx + PAGE_SIZE, PAGE_SIZE).subscribe({
         next: (val) => {
@@ -45,7 +45,7 @@ const App = () => {
       <div className="wrapper">
         <Logo />
         <div className="notes-wrapper">
-          <div className="notes-list" onScroll={onScroll}>
+          <div className="notes-list" data-testid="notes-list" onScroll={onScroll}>
             {notes.length
               ? notes.map((note, i) => (
                   <span
