@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import { getPaginatedNotes } from './requests.ts';
 import { NoteModel } from './models.tsx';
-import { Logo, Edit, Editor } from 'notatnik_app_fe_static';
+import { Logo, Edit, Editor, Close } from 'notatnik_app_fe_static';
 
 const PAGE_SIZE = 40;
 
@@ -11,7 +11,7 @@ const App = () => {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [selectedNote, setSelectedNote] = useState<NoteModel>();
   const [startIdx, setStartIdx] = useState(0);
-  const [editableContents, setEditableContents] = useState('siemanko');
+  const [editableContents, setEditableContents] = useState('');
 
   useEffect(() => {
     if (!_isMounted.current) {
@@ -41,9 +41,18 @@ const App = () => {
     }
   };
 
+  const onNoteSelection = (note: NoteModel) => {
+    setSelectedNote(note);
+    setEditableContents('');
+  }
+
+  const editSelectedNote = () => {
+    const contents = selectedNote.contents.reduce((tot, str) => tot + '<br/>' + str)
+    setEditableContents(contents);
+  }
+
   return (
     <>
-      <Editor text={editableContents} setText={setEditableContents}/>
       <div className="wrapper">
         <Logo width={100} />
         <div className="notes-wrapper">
@@ -55,7 +64,7 @@ const App = () => {
                     className={`note-title-list ${
                       note.title === selectedNote?.title && 'selected-note-title'
                     }`}
-                    onClick={() => setSelectedNote(note)}
+                    onClick={() => onNoteSelection(note)}
                   >
                     {note.title}
                   </span>
@@ -65,18 +74,28 @@ const App = () => {
           {selectedNote && (
             <div className="note-wrapper">
               <span className="note-title-wrapper">{selectedNote.title}</span>
+              <div className='edit-note-contents-icon'>
+                {editableContents ? 
+                  <div onClick={() => setEditableContents('')}>
+                    <Close width={30} />
+                  </div>
+                  : 
+                  <div onClick={editSelectedNote}>
+                    <Edit width={30} />
+                  </div>}
+              </div>
               <div className="break" />
+
               <div className="note-contents-wrapper">
-                {selectedNote.contents.map((line, i) => (
-                  <span key={`line-${i}`}>
-                    {line}
-                    <br />
-                  </span>
-                ))}
-                
-                <div className='edit-note-contents-icon'>
-                  <Edit width={50} />
-                </div>
+                {editableContents ?
+                  <Editor text={editableContents} setText={setEditableContents}/>
+                  :
+                  selectedNote.contents.map((line, i) => (
+                    <span key={`line-${i}`}>
+                      {line}
+                      <br />
+                    </span>
+                  ))}
               </div>
             </div>
           )}

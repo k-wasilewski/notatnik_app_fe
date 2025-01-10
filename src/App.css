@@ -51,4 +51,6 @@
   justify-content: flex-end;
   margin-left: auto;
   margin-right: 0;
+  width: fit-content;
+  cursor: pointer;
 }
