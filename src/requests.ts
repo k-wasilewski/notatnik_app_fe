@@ -1,21 +1,18 @@
 import { ajax } from 'rxjs/ajax';
-import { NoteModel } from './Note';
+import { NoteModel } from './models';
 import { Observable, map, catchError, of } from 'rxjs';
 
-export const getAllNotes: () => Observable<NoteModel[]> = () => {
-  return ajax.get('http://localhost:8080/v1/notes').pipe(
-    map((res) => res.response as NoteModel[]),
-    catchError((error) => of(error))
-  );
-};
+const API_BASE_URL = 'http://localhost:8080';
+
+export const getAllNotes: () => Observable<NoteModel[]> = () => ajax.get(`${API_BASE_URL}/v1/notes`).pipe(
+  map((res) => res.response as NoteModel[]),
+  catchError((error) => of(error))
+);
 
 export const getPaginatedNotes: (start: number, end: number) => Observable<NoteModel[]> = (
   start,
   end
-) => {
-  console.log(start, end)
-  return ajax.get(`http://localhost:8080/v1/paginated/notes?start=${start}&end=${end}`).pipe(
-    map((res) => res.response as NoteModel[]),
-    catchError((error) => of(error))
-  );
-};
+) => ajax.get(`${API_BASE_URL}/v1/paginated/notes?start=${start}&end=${end}`).pipe(
+  map((res) => res.response as NoteModel[]),
+  catchError((error) => of(error))
+);

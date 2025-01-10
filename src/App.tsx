@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import { getPaginatedNotes } from './requests.ts';
-import { NoteModel } from './Note.tsx';
-import { Logo } from 'notatnik_app_fe_static';
+import { NoteModel } from './models.tsx';
+import { Logo, Edit, Editor } from 'notatnik_app_fe_static';
 
 const PAGE_SIZE = 40;
 
@@ -11,6 +11,7 @@ const App = () => {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [selectedNote, setSelectedNote] = useState<NoteModel>();
   const [startIdx, setStartIdx] = useState(0);
+  const [editableContents, setEditableContents] = useState('siemanko');
 
   useEffect(() => {
     if (!_isMounted.current) {
@@ -27,7 +28,7 @@ const App = () => {
 
   const onScroll = (evt) => {
     const target = evt.target;
-console.log('scroll')
+
     if (target.scrollTop + target.offsetHeight === target.scrollHeight) {
       getPaginatedNotes(startIdx + PAGE_SIZE, PAGE_SIZE).subscribe({
         next: (val) => {
@@ -42,8 +43,9 @@ console.log('scroll')
 
   return (
     <>
+      <Editor text={editableContents} setText={setEditableContents}/>
       <div className="wrapper">
-        <Logo />
+        <Logo width={100} />
         <div className="notes-wrapper">
           <div className="notes-list" data-testid="notes-list" onScroll={onScroll}>
             {notes.length
@@ -71,6 +73,10 @@ console.log('scroll')
                     <br />
                   </span>
                 ))}
+                
+                <div className='edit-note-contents-icon'>
+                  <Edit width={50} />
+                </div>
               </div>
             </div>
           )}

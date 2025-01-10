@@ -45,3 +45,10 @@
   width: 1000px;
   padding: 10px;
 }
+
+.edit-note-contents-icon {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  margin-right: 0;
+}
