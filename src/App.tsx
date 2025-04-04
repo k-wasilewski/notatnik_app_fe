@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
-import { addNote, editNote, getPaginatedNotes } from './requests.ts';
+import { addNote, deleteNote, editNote, getPaginatedNotes } from './requests.ts';
 import { NoteModel } from './models.tsx';
-import { Logo, Edit, Editor, Close, Save } from 'notatnik_app_fe_static';
+import { Logo, Edit, Editor, Close, Save, Delete } from 'notatnik_app_fe_static';
 import { strArraysEqual } from './utils.ts';
 
 const PAGE_SIZE = 40;
@@ -91,6 +91,18 @@ const App = () => {
     setEditableContents(contents);
   }
 
+  const removeSelectedNote = () => {
+    deleteNote(selectedNote).subscribe({
+      next: (val) => {
+        if (val) {
+          setNotes(prev => prev.filter(n => n !== selectedNote));
+          setSelectedNote(null);
+        }
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
   return (
     <>
       <div className="wrapper">
@@ -133,10 +145,16 @@ const App = () => {
                       )}
                     </>
                   )
-                  : 
-                  <div onClick={editSelectedNote}>
-                    <Edit width={30} />
-                  </div>}
+                  :
+                  <>
+                    <div onClick={editSelectedNote}>
+                      <Edit width={30} />
+                    </div>
+                    <div onClick={removeSelectedNote}>
+                      <Delete width={30} />
+                    </div>
+                  </>
+                  }
               </div>
               <div className="break" />
 

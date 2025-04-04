@@ -28,3 +28,9 @@ export const addNote: (note: NoteModel) => Observable<NoteModel> = (note) =>
     map(res => res.response as NoteModel),
     catchError(err => of(err))
   );
+
+export const deleteNote: (note: NoteModel) => Observable<boolean> = (note) =>
+  ajax.delete(`${API_BASE_URL}/delete/notes?title=${note.title}`).pipe(
+    map(res => res.response as boolean),
+    catchError(err => of(err))
+  );
