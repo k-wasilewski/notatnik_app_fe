@@ -22,3 +22,9 @@ export const editNote: (note: NoteModel) => Observable<NoteModel> = (note) =>
     map(res => res.response as NoteModel),
     catchError(err => of(err))
   );
+
+export const addNote: (note: NoteModel) => Observable<NoteModel> = (note) =>
+  ajax.post(`${API_BASE_URL}/add/notes`, note).pipe(
+    map(res => res.response as NoteModel),
+    catchError(err => of(err))
+  );

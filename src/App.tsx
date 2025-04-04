@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
-import { editNote, getPaginatedNotes } from './requests.ts';
+import { addNote, editNote, getPaginatedNotes } from './requests.ts';
 import { NoteModel } from './models.tsx';
 import { Logo, Edit, Editor, Close, Save } from 'notatnik_app_fe_static';
 import { strArraysEqual } from './utils.ts';
@@ -21,7 +21,7 @@ const App = () => {
       getPaginatedNotes(startIdx, PAGE_SIZE).subscribe({
         next: (val) => {
           if (!val.length) return;
-          setNotes((prev) => [...prev, ...val]);
+          setNotes((prev) => [{ title: '', contents: [], new: true }, ...prev, ...val]);
         },
         error: (err) => console.error(err),
       });
@@ -38,17 +38,31 @@ const App = () => {
   }, [editableContents, selectedNote]);
 
   const saveEditableContents = () => {
-    const newSelectedContents = editableContents.split('<br>');
-    const newSelectedNote: NoteModel = { title: selectedNote.title, contents: newSelectedContents };
-    editNote(newSelectedNote).subscribe({
-      next: (val) => {
-        const updatedNotes = notes.map((n: NoteModel) => {
-          if (n.title === val.title) n.contents = val.contents;
-          return n;
-        });
-        setNotes(updatedNotes);
-      }
-    });
+    if (selectedNote.new) {
+      const newSelectedContents = editableContents.replaceAll('</div>', '').split('<div>');
+      const newSelectedNote: NoteModel = { title: selectedNote.title, contents: newSelectedContents[0] === '<br/>' || newSelectedContents[0] === '' ? newSelectedContents.slice(1) : newSelectedContents  };
+
+      addNote(newSelectedNote).subscribe({
+        next: (val) => {
+          setNotes(prev => [...prev, val].sort((a, b) => a.title.localeCompare(b.title)));
+          setSelectedNote({ title: '', contents: [], new: true });
+        }
+      });
+    } else {
+      const newSelectedContents = editableContents.split('<br>');
+      const newSelectedNote: NoteModel = { title: selectedNote.title, contents: newSelectedContents };
+
+      editNote(newSelectedNote).subscribe({
+        next: (val) => {
+          const updatedNotes = notes.map((n: NoteModel) => {
+            if (n.title === val.title) n.contents = val.contents;
+            return n;
+          });
+          setNotes(updatedNotes);
+        }
+      });
+    }
+
     setEditableContents('');
   }
 
@@ -73,7 +87,7 @@ const App = () => {
   }
 
   const editSelectedNote = () => {
-    const contents = selectedNote.contents.reduce((tot, str) => tot + '<br/>' + str)
+    const contents = (selectedNote.contents.length && selectedNote.contents.reduce((tot, str) => tot + '<br/>' + str)) || '<br/>';
     setEditableContents(contents);
   }
 
@@ -92,14 +106,19 @@ const App = () => {
                     }`}
                     onClick={() => onNoteSelection(note)}
                   >
-                    {note.title}
+                    {note.new ? 'Add new note' : note.title}
                   </span>
                 ))
               : null}
           </div>
           {selectedNote && (
             <div className="note-wrapper">
-              <span className="note-title-wrapper">{selectedNote.title}</span>
+              <span className="note-title-wrapper">
+                {selectedNote.new ?
+                  <input placeholder={'Add new note'} onChange={e => setSelectedNote(prev => ({ ...prev, title: e.target.value }))} value={selectedNote.title}/>
+                  :
+                  selectedNote.title}
+              </span>
               <div className='edit-note-contents-icon'>
                 {editableContents ? 
                   (
@@ -126,12 +145,9 @@ const App = () => {
                 {editableContents ?
                   <Editor text={editableContents} setText={setEditableContents}/>
                   :
-                  selectedNote.contents.map((line, i) => (
-                    <span key={`line-${i}`}>
-                      {line}
-                      <br />
-                    </span>
-                  ))}
+                  <div dangerouslySetInnerHTML={{ __html: selectedNote.contents.map((line, i) => (
+                    `<span key={line-${i}}>${line}<br /></span>`
+                  ))}}/>}
               </div>
             </div>
           )}
