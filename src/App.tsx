@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
-import { getPaginatedNotes } from './requests.ts';
+import { editNote, getPaginatedNotes } from './requests.ts';
 import { NoteModel } from './models.tsx';
-import { Logo, Edit, Editor, Close } from 'notatnik_app_fe_static';
+import { Logo, Edit, Editor, Close, Save } from 'notatnik_app_fe_static';
+import { strArraysEqual } from './utils.ts';
 
 const PAGE_SIZE = 40;
 
@@ -12,6 +13,7 @@ const App = () => {
   const [selectedNote, setSelectedNote] = useState<NoteModel>();
   const [startIdx, setStartIdx] = useState(0);
   const [editableContents, setEditableContents] = useState('');
+  const [editableContentsChanged, setEditableContentsChanged] = useState(false);
 
   useEffect(() => {
     if (!_isMounted.current) {
@@ -25,6 +27,30 @@ const App = () => {
       });
     }
   }, [startIdx]);
+
+  useEffect(() => {
+    const newContents = editableContents.split('<br/>');
+    const oldContents = selectedNote?.contents;
+
+    if (selectedNote && editableContents && !strArraysEqual(newContents, oldContents)) {
+      setEditableContentsChanged(true);
+    }
+  }, [editableContents, selectedNote]);
+
+  const saveEditableContents = () => {
+    const newSelectedContents = editableContents.split('<br>');
+    const newSelectedNote: NoteModel = { title: selectedNote.title, contents: newSelectedContents };
+    editNote(newSelectedNote).subscribe({
+      next: (val) => {
+        const updatedNotes = notes.map((n: NoteModel) => {
+          if (n.title === val.title) n.contents = val.contents;
+          return n;
+        });
+        setNotes(updatedNotes);
+      }
+    });
+    setEditableContents('');
+  }
 
   const onScroll = (evt) => {
     const target = evt.target;
@@ -76,9 +102,18 @@ const App = () => {
               <span className="note-title-wrapper">{selectedNote.title}</span>
               <div className='edit-note-contents-icon'>
                 {editableContents ? 
-                  <div onClick={() => setEditableContents('')}>
-                    <Close width={30} />
-                  </div>
+                  (
+                    <>
+                      <div onClick={() => setEditableContents('')}>
+                        <Close width={30} />
+                      </div>
+                      {editableContentsChanged && (
+                        <div onClick={() => saveEditableContents()}>
+                          <Save width={30} />
+                        </div>
+                      )}
+                    </>
+                  )
                   : 
                   <div onClick={editSelectedNote}>
                     <Edit width={30} />
@@ -87,6 +122,7 @@ const App = () => {
               <div className="break" />
 
               <div className="note-contents-wrapper">
+                {/* https://www.npmjs.com/package/react-simple-wysiwyg */}
                 {editableContents ?
                   <Editor text={editableContents} setText={setEditableContents}/>
                   :
