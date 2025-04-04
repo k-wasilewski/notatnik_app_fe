@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import { addNote, deleteNote, editNote, getPaginatedNotes } from './requests.ts';
 import { NoteModel } from './models.tsx';
-import { Logo, Edit, Editor, Close, Save, Delete } from 'notatnik_app_fe_static';
+import { Logo, Edit, Editor, Close, Save, Delete, Modal } from 'notatnik_app_fe_static';
 import { strArraysEqual } from './utils.ts';
 
 const PAGE_SIZE = 40;
@@ -14,6 +14,7 @@ const App = () => {
   const [startIdx, setStartIdx] = useState(0);
   const [editableContents, setEditableContents] = useState('');
   const [editableContentsChanged, setEditableContentsChanged] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     if (!_isMounted.current) {
@@ -97,6 +98,7 @@ const App = () => {
         if (val) {
           setNotes(prev => prev.filter(n => n !== selectedNote));
           setSelectedNote(null);
+          setDeleteModalOpen(false);
         }
       },
       error: (err) => console.error(err),
@@ -150,7 +152,7 @@ const App = () => {
                     <div onClick={editSelectedNote}>
                       <Edit width={30} />
                     </div>
-                    <div onClick={removeSelectedNote}>
+                    <div onClick={() => setDeleteModalOpen(true)}>
                       <Delete width={30} />
                     </div>
                   </>
@@ -171,6 +173,20 @@ const App = () => {
           )}
         </div>
       </div>
+
+      <Modal 
+        content={
+          <>
+            <h4>{`Are you sure you want to delete ${selectedNote?.title}?`}</h4>
+            <button onClick={() => setDeleteModalOpen(false)}>No</button>
+            <button onClick={() => removeSelectedNote()}>Yes</button>
+          </>
+        } 
+        isOpen={deleteModalOpen}
+        closeModal={() => setDeleteModalOpen(false)} 
+        styles={{content: { width: '400px', height: '100px' }}} 
+        label={`Are you sure you want to delete ${selectedNote?.title}?`}
+      ></Modal>
     </>
   );
 };
