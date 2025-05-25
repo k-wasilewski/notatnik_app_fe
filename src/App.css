@@ -10,7 +10,7 @@
   overflow-y: scroll;
   scrollbar-width: thin;
   height: 90vh;
-  width: 200px;
+  min-width: 200px;
 }
 
 .note-title-list {
