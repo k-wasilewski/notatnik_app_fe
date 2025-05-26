@@ -43,12 +43,14 @@ const App = () => {
       const newSelectedContents = editableContents.replaceAll('</div>', '').split('<div>');
       const newSelectedNote: NoteModel = { title: selectedNote.title, contents: newSelectedContents[0] === '<br/>' || newSelectedContents[0] === '' ? newSelectedContents.slice(1) : newSelectedContents  };
 
-      addNote(newSelectedNote).subscribe({
+      if (newSelectedNote.title) {
+        addNote(newSelectedNote).subscribe({
         next: (val) => {
           setNotes(prev => [...prev, val].sort((a, b) => a.title.localeCompare(b.title)));
           setSelectedNote({ title: '', contents: [], new: true });
         }
       });
+      }
     } else {
       const newSelectedContents = editableContents.split('<br>');
       const newSelectedNote: NoteModel = { title: selectedNote.title, contents: newSelectedContents };
